@@ -3,6 +3,7 @@
 		"stdio.h": "c",
 		"string.h": "c",
 		"stdlib.h": "c",
-		"m2h_utils.h": "c"
+		"m2h_utils.h": "c",
+		"stdbool.h": "c"
 	}
 }
