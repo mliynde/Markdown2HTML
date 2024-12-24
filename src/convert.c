@@ -29,6 +29,11 @@ void convert_markdown_to_html(const char *input_file) {
 	preprocess_html(outfile, input_file);
 
 	int converting_table = 0;
+	int converting_codespan = 0;
+	int converting_blockquote = 0;
+	int converting_list = 0;
+	int converting_list_item = 0;
+
 	while (fgets(line, sizeof(line), infile)) {
 		line[strcspn(line, "\n")] = '\0';
 
@@ -59,7 +64,7 @@ void convert_markdown_to_html(const char *input_file) {
 		}
 		else {
 			converting_table = 0;
-			fprintf(outfile, "<p>%s</p>\n", line);
+			convert_para_to_html(outfile, line);
 		}
 	}
 

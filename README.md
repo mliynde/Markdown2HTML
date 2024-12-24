@@ -15,3 +15,12 @@ USTC CS Experiment: Markdown to HTML
 ### 目标
 
 写一个程序实现Markdown转HTML的功能，至少实现[GFM规范](http://guides.github.com/features/mastering-markdown)中常用的 Text，Heading，List，Images，Links 这五项内容的转换，其他内容可自行选择实现。
+
+### 更新日志
+
+#### alpha v0.3
+
+- 完成基本的 Markdown 转 HTML 功能
+- 功能：Heading，List，Text(bold, italic, strike, bold italic, code)
+
+- 已知bug: 尚未正确处理markdown段落，导致html空段落过多
