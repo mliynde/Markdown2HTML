@@ -15,4 +15,6 @@ int is_table_row(const char *line); // 判断当前markdown行是否为表格行
 
 int is_table_separator(const char *line); // 判断当前markdown行是否为表格分隔符
 
+int is_code_block(const char *line); // 判断当前markdown行是否为代码块
+
 #endif // M2H_JUDGE_H

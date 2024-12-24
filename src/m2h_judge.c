@@ -43,3 +43,10 @@ int is_table_separator(const char *line) {
 	}
 	return 0;
 }
+
+int is_code_block(const char *line) {
+	if (strlen(line) < 3) {
+		return 0;
+	}
+	return strstr(line, "```") == line;
+}

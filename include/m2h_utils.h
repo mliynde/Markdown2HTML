@@ -13,9 +13,13 @@ void preprocess_html(FILE *outfile, const char *file); // 为html文件添加头
 
 // para
 
-int replace_all(char *str, const char *old, const char *new); // 实现全部文本替换
+int find_once(char *str, const char *tofind); // 在str中查找一次
 
-int replace_once(char *str, const char *old, const char *new); // 实现第一个目标文本替换
+int replace_all(char *str, const char *old, const char *newstr); // 实现全部文本替换
+
+int replace_once(char *str, const char *old, const char *newstr); // 实现第一个目标文本替换
+
+int insert_all(char *str, const char *old, const char *instr); // 实现全部文本插入（未修复replace_all时）
 
 void replace_special_chars(char *str); // 在m2h时替换特殊字符，避免与html语法冲突
 
