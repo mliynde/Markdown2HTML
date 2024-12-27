@@ -4,6 +4,7 @@
 		"string.h": "c",
 		"stdlib.h": "c",
 		"m2h_utils.h": "c",
-		"stdbool.h": "c"
+		"stdbool.h": "c",
+		"crtdefs.h": "c"
 	}
 }

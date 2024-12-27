@@ -50,3 +50,9 @@ int is_code_block(const char *line) {
 	}
 	return strstr(line, "```") == line;
 }
+
+int is_html_comment(const char *line) {
+    const char *start = strstr(line, "<!--");
+    const char *end = strstr(line, "-->");
+    return start != NULL && end != NULL && start < end;
+}

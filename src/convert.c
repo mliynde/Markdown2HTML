@@ -51,7 +51,7 @@ void convert_markdown_to_html(const char *input_file) {
 				converting_table = 0;
 			}
 		}
-		if (converting_codespan) {	// 所谓line46
+		if (converting_codespan) {	// 所谓line54
 			if (is_code_block(line)) {
 				fprintf(outfile, "</code></pre>\n");
 				converting_codespan = 0;
@@ -60,6 +60,7 @@ void convert_markdown_to_html(const char *input_file) {
 			else {
 				char *buffer = (char *)malloc(MAX_LINE_LENGTH * 2);
 				strcpy(buffer, line);
+
 				replace_special_chars(buffer); // declared in m2h_utils.c
 
 				fprintf(outfile, "%s\n", buffer);
@@ -74,6 +75,9 @@ void convert_markdown_to_html(const char *input_file) {
 		if (line[0] == '\0') {
 			// fprintf(outfile, "<p>&nbsp;</p>\n");
 		}
+		else if (is_html_comment(line)) {	// 处理html注释
+			fprintf(outfile, "%s\n", line);
+		}
 		else if (is_header(line)) {	// 处理标题
 			convert_header_to_html(outfile, line);
 		}
@@ -82,7 +86,7 @@ void convert_markdown_to_html(const char *input_file) {
 				fprintf(outfile, "<pre><code>\n"); // 尚未指定代码块语言
 				converting_codespan = 1;
 			}
-			// else 部分见 line46
+			// else 部分见 line54
 		}
 		else if (is_table_row(line)) {	// 处理表格
 			if (!converting_table) {
@@ -104,7 +108,7 @@ void convert_markdown_to_html(const char *input_file) {
 
 	fprintf(outfile, "</body>\n</html>\n");
 
-	fprintf(stdout, "Successfully generated HTML File in %s", output_file);
+	fprintf(stdout, "Successfully generated HTML file in %s", output_file);
 
 	fclose(infile);
 	fclose(outfile);

@@ -5,6 +5,10 @@
 #define MAX_LINE_LENGTH 2048
 #endif // MAX_LINE_LENGTH
 
+#ifndef REPLACEMENT_COUNT
+#define REPLACEMENT_COUNT 10
+#endif // REPLACEMENT_COUNT
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -23,7 +27,15 @@ int insert_all(char *str, const char *old, const char *instr); // 实现全部�
 
 void replace_special_chars(char *str); // 在m2h时替换特殊字符，避免与html语法冲突
 
-void convert_para_to_html(FILE *outfile, const char *file); // 统一内容输出
+void convert_markdown_links(char *str); // markdown链接转换
+
+void convert_markdown_images(char *str); // markdown图片转换
+
+void convert_formats(char *str);
+
+void convert_content_to_html(FILE *outfile, const char *file); // 统一内容输出
+
+void convert_para_to_html(FILE *outfile, const char *file); // 段落输出
 
 // end para
 
