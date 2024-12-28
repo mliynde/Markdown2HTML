@@ -27,25 +27,63 @@ int get_list_level(int type, int pos, int a[]){
 }
 
 void convert_markdown_to_html(const char *input_file) {
+	clock_t start_time = clock();
+
 	char output_file[MAX_LINE_LENGTH];
 	char datetime[MAX_TIME_LENGTH];
 	get_current_datetime(datetime, sizeof(datetime));
-	snprintf(output_file, sizeof(output_file), "Output_%s.html", datetime);
+
+	const char *base_name = strrchr(input_file, '/');
+	if (!base_name) {
+		base_name = strrchr(input_file, '\\');
+	}
+	if (!base_name) {
+		base_name = input_file;
+	} else {
+		base_name++;
+	}
+
+	char file_name[MAX_LINE_LENGTH];
+	strncpy(file_name, base_name, MAX_LINE_LENGTH);
+
+	char * pos_dot = file_name + strlen(file_name) - 1;
+	char * file_ext = NULL;
+	while(pos_dot >= file_name){
+		if (*pos_dot == '.'){
+			*pos_dot = '\0';
+			file_ext = pos_dot + 1;
+			break;
+		}
+		--pos_dot;
+	}
+
+	if (file_ext == NULL || strlen(file_ext) == 0 || (strcmp(file_ext, "md") != 0 && strcmp(file_ext, "markdown") != 0 && strcmp(file_ext, "MD") != 0)) {
+		fprintf(stderr, "Error: No file extension like \".md\" found in %s\n", input_file);
+		clock_t end_time = clock();
+		double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+		fprintf(stdout, "Conversion exit in %.3f seconds.\n\n", elapsed_time);
+		return;
+	}
+
+	snprintf(output_file, sizeof(output_file), "Output_%s_%s.html", file_name, datetime);
 
 	FILE *infile = fopen(input_file, "r");
+	if (infile == NULL) {
+		fprintf(stderr, "Error opening input file %s\nPress any key to exit...", input_file);
+		getchar();
+		exit(EXIT_FAILURE);
+	}
 	FILE *outfile = fopen(output_file, "w");
+	if (outfile == NULL) {
+		fprintf(stderr, "Error opening output file %s\nPress any key to exit...", output_file);
+		fclose(infile);
+		getchar();
+		exit(EXIT_FAILURE);
+	}
+
 	char line[MAX_LINE_LENGTH];
 
-	if (infile == NULL) {
-		fprintf(stderr, "Error opening file %s\n", input_file);
-		exit(EXIT_FAILURE);
-	}
-	if (outfile == NULL) {
-		fprintf(stderr, "Error opening file %s\n", output_file);
-		exit(EXIT_FAILURE);
-	}
-
-	preprocess_html(outfile, input_file);
+	preprocess_html(outfile, file_name);
 
 	int converting_table = 0;
 	int converting_codespan = 0;
@@ -58,8 +96,12 @@ void convert_markdown_to_html(const char *input_file) {
 	int list_level_of_order[MAX_LIST_LEVEL] = {0};
 
 	int md_line_cnt = 0;
+
 	while (fgets(line, sizeof(line), infile)) {
-		fprintf(stdout, "line %d read\n", ++md_line_cnt);
+		md_line_cnt++;
+		if (md_line_cnt % 100 == 0){
+			fprintf(stdout, "line %d read\n", md_line_cnt);
+		}
 
 		line[strcspn(line, "\n")] = '\0';
 
@@ -194,14 +236,16 @@ void convert_markdown_to_html(const char *input_file) {
 				repeat_text(list_diff, "<ol>\n", outfile);
 			}
 
-			fprintf(outfile, "<li>\n");
+			fprintf(outfile, "<li>");
 			convert_para_to_html(outfile, find_ordered_list_content(line)); // 跳过列表标记和空格
 			fprintf(outfile, "</li>\n");
 
 			converting_list = 1;
+			for(int i=1; i<=list_diff; ++i){
+				list_level_of_order[list_level + i] = ORDERED;
+			}
 			ol_level = cur_list_level;
 			list_level = cur_list_level;
-			list_level_of_order[list_level] = ORDERED;
 		}
 		else if (is_unordered_list(line)) {
 			int cur_list_level = is_unordered_list(line);
@@ -209,14 +253,16 @@ void convert_markdown_to_html(const char *input_file) {
 			if (list_diff > 0) {
 				repeat_text(list_diff, "<ul>\n", outfile);
 			}
-			fprintf(outfile, "<li>\n");
+			fprintf(outfile, "<li>");
 			convert_para_to_html(outfile, find_unordered_list_content(line)); // 跳过列表标记和空格
 			fprintf(outfile, "</li>\n");
 
 			converting_list = 1;
+			for(int i=1; i<=list_diff; ++i){
+				list_level_of_order[list_level + i] = UNORDERED;
+			}
 			ul_level = cur_list_level;
 			list_level = cur_list_level;
-			list_level_of_order[list_level] = UNORDERED;
 		}
 		else if (is_table_row(line)) {	// 处理表格
 			if (!converting_table) {
@@ -239,8 +285,12 @@ void convert_markdown_to_html(const char *input_file) {
 
 	fprintf(outfile, "</body>\n</html>\n");
 
-	fprintf(stdout, "Successfully generated HTML file in %s", output_file);
+	fprintf(stdout, "Successfully generated HTML file in %s\n", output_file);
 
 	fclose(infile);
 	fclose(outfile);
+
+	clock_t end_time = clock();
+	double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+	fprintf(stdout, "Conversion completed in %.3f seconds.\n\n", elapsed_time);
 }

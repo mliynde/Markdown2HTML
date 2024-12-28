@@ -27,6 +27,8 @@ int insert_all(char *str, const char *old, const char *instr); // 实现全部�
 
 void replace_special_chars(char *str); // 在m2h时替换特殊字符，避免与html语法冲突
 
+void convert_title_to_id(char *str); // 将标题转换为id
+
 void convert_markdown_links(char *str); // markdown链接转换
 
 void convert_markdown_images(char *str); // markdown图片转换

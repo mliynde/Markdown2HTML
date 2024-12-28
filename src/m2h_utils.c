@@ -85,6 +85,27 @@ void replace_special_chars(char *str) {
 	replace_all(str, "\t", "    ");
 }
 
+void convert_title_to_id(char *str) {
+	char *pos = str;
+	while (*pos) {
+		if (*pos == ' ') {
+			*pos = '-';
+		}
+		else if (*pos >= 'A' && *pos <= 'Z') {
+			*pos = *pos - 'A' + 'a';
+		}
+		else{
+			char special_chars[] = "!\"#$%&'()*+,./:;<=>?@[\\]^_`{|}~";
+			for (int i = 0; special_chars[i] != '\0'; i++) {
+				char old[2] = {special_chars[i], '\0'};
+				replace_all(str, old, "-");
+			}
+		}
+		pos++;
+	}
+	while(replace_all(str, "--", "-"));
+}
+
 void convert_markdown_links(char *str){ // 使用前需先调用replace_special_chars
 	char *pos = str;
 	while ((pos = strstr(pos, "[")) != NULL) {
@@ -303,7 +324,12 @@ void convert_header_to_html(FILE *outfile, const char *line) {
 	while (line[level] == '#') {
 		level++;
 	}
-	fprintf(outfile, "<h%d>", level);
+	char *header_id = (char *)malloc(MAX_LINE_LENGTH);
+	strcpy(header_id, line + level + 1);
+
+	convert_title_to_id(header_id);
+
+	fprintf(outfile, "<h%d id=\"%s\">", level, header_id);
 	convert_content_to_html(outfile, line + level + 1);
 	fprintf(outfile, "</h%d>\n", level);
 }
@@ -353,38 +379,38 @@ void convert_bold_table_row_to_html(FILE *outfile, const char *line) {
 }
 
 char * find_ordered_list_content(const char *line) {
-    const char *pos = line;
-    // 跳过行首的空格
-    while (*pos == ' ') {
-        pos++;
-    }
-    // 跳过数字和点
-    while (*pos>='0'&&*pos<='9') {
-        pos++;
-    }
-    if (*pos == '.') {
-        pos++;
-    }
-    // 跳过紧随其后的空格
-    while (*pos == ' ') {
-        pos++;
-    }
-    return (char *)pos;
+	const char *pos = line;
+	// 跳过行首的空格
+	while (*pos == ' ') {
+		pos++;
+	}
+	// 跳过数字和点
+	while (*pos>='0'&&*pos<='9') {
+		pos++;
+	}
+	if (*pos == '.') {
+		pos++;
+	}
+	// 跳过紧随其后的空格
+	while (*pos == ' ') {
+		pos++;
+	}
+	return (char *)pos;
 }
 
 char * find_unordered_list_content(const char *line) {
-    const char *pos = line;
-    // 跳过行首的空格
-    while (*pos == ' ') {
-        pos++;
-    }
-    // 跳过列表标记（*、-、+）
-    if (*pos == '*' || *pos == '-' || *pos == '+') {
-        pos++;
-    }
-    // 跳过紧随其后的空格
-    while (*pos == ' ') {
-        pos++;
-    }
-    return (char *)pos;
+	const char *pos = line;
+	// 跳过行首的空格
+	while (*pos == ' ') {
+		pos++;
+	}
+	// 跳过列表标记（*、-、+）
+	if (*pos == '*' || *pos == '-' || *pos == '+') {
+		pos++;
+	}
+	// 跳过紧随其后的空格
+	while (*pos == ' ') {
+		pos++;
+	}
+	return (char *)pos;
 }
