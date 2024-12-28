@@ -82,6 +82,7 @@ void replace_special_chars(char *str) {
 	replace_all(str, ">", "&gt;");
 	replace_all(str, "\"", "&quot;");
 	replace_all(str, "'", "&apos;");
+	replace_all(str, "\t", "    ");
 }
 
 void convert_markdown_links(char *str){ // 使用前需先调用replace_special_chars
@@ -293,7 +294,6 @@ void convert_para_to_html(FILE *outfile, const char *file) {
 	fprintf(outfile, "</p>\n");
 }
 
-
 // end of para
 
 // 标题
@@ -350,4 +350,41 @@ void convert_bold_table_row_to_html(FILE *outfile, const char *line) {
 	fprintf(outfile, "  </tr>\n");
 
 	free(line_copy);
+}
+
+char * find_ordered_list_content(const char *line) {
+    const char *pos = line;
+    // 跳过行首的空格
+    while (*pos == ' ') {
+        pos++;
+    }
+    // 跳过数字和点
+    while (*pos>='0'&&*pos<='9') {
+        pos++;
+    }
+    if (*pos == '.') {
+        pos++;
+    }
+    // 跳过紧随其后的空格
+    while (*pos == ' ') {
+        pos++;
+    }
+    return (char *)pos;
+}
+
+char * find_unordered_list_content(const char *line) {
+    const char *pos = line;
+    // 跳过行首的空格
+    while (*pos == ' ') {
+        pos++;
+    }
+    // 跳过列表标记（*、-、+）
+    if (*pos == '*' || *pos == '-' || *pos == '+') {
+        pos++;
+    }
+    // 跳过紧随其后的空格
+    while (*pos == ' ') {
+        pos++;
+    }
+    return (char *)pos;
 }

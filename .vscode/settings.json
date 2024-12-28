@@ -5,6 +5,10 @@
 		"stdlib.h": "c",
 		"m2h_utils.h": "c",
 		"stdbool.h": "c",
-		"crtdefs.h": "c"
+		"crtdefs.h": "c",
+		"m2h_judge.h": "c",
+		"convert.h": "c",
+		"gettime.h": "c",
+		"time.h": "c"
 	}
 }

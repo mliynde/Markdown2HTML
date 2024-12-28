@@ -45,4 +45,10 @@ void convert_table_row_to_html(FILE *outfile, const char *line); // 将markdown�
 
 void convert_bold_table_row_to_html(FILE *outfile, const char *line); // 将markdown加粗行转换为html加粗行
 
+// find_quote_content移至m2h_judge
+
+char * find_ordered_list_content(const char *line);
+
+char * find_unordered_list_content(const char *line);
+
 #endif // M2H_UTILS_H

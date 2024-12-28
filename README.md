@@ -2,6 +2,8 @@
 
 USTC CS Experiment: Markdown to HTML
 
+---
+
 ## 实验简介
 
 本项目是作者的USTC程设A大作业，计划实现Markdown转HTML的工具。
@@ -16,15 +18,24 @@ USTC CS Experiment: Markdown to HTML
 
 写一个程序实现Markdown转HTML的功能，至少实现[GFM规范](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)中常用的 Text，Heading，List，Images，Links 这五项内容的转换，其他内容可自行选择实现。
 
+---
+
 ### 更新日志
+
+#### alpha v0.5.0
+
+- 加入基本Quote和List语法支持
+  - 部分支持嵌套使用，不支持形如`- - -`，`1. 2. 3.`的嵌套
+- 加入简单的分割线
 
 #### alpha v0.4.1
 
 - 加入markdown图片、链接的支持
+  - 目前支持http(s)链接
 - 加入单行html注释的支持
 
 - 修复
-  - para中不匹配的多个`_`会被替换成`<i>``<\i>`，或者说，code中的`_`会被替换成`<i>``<\i>`
+    - para中不匹配的多个`_`会被替换成`<i>``<\i>`，或者说，code中的`_`会被替换成`<i>``<\i>`
 
 #### alpha v0.4.0
 
@@ -44,3 +55,5 @@ USTC CS Experiment: Markdown to HTML
 - 功能：Heading，List，Text(bold, italic, strike, bold italic, code)
 
 - 已知bug: 尚未正确处理markdown段落，导致html空段落过多
+
+
